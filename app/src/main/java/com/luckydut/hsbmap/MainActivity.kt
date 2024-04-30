@@ -12,10 +12,18 @@ import com.naver.maps.map.OnMapReadyCallback
 import com.naver.maps.map.util.FusedLocationSource
 import com.naver.maps.map.LocationTrackingMode
 
+import android.location.Geocoder
+import java.util.Locale
+import android.widget.Toast
+import com.naver.maps.geometry.LatLng
+import com.naver.maps.map.overlay.Marker
+import java.io.IOException
+
 class MainActivity : AppCompatActivity(), OnMapReadyCallback {
     private val LOCATION_PERMISSION_REQUEST_CODE = 5000 // 권한 요청을 위한 요청 코드
     private lateinit var locationSource: FusedLocationSource // 위치 정보 소스
     private lateinit var naverMap: NaverMap // 네이버 맵 객체
+    private val marker = Marker() // 마커로 주소 및 위경도 표시하기- 마커 인스턴스를 클래스 레벨로 선언
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
@@ -48,7 +56,36 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback {
         // 자전거 레이어 활성화
         naverMap.setLayerGroupEnabled(NaverMap.LAYER_GROUP_BICYCLE, true)*/
 
+        // 마커로 주소 및 위경도 표시하기-지도 클릭 이벤트 처리
+        naverMap.setOnMapClickListener { _, coord ->
+            // 마커 위치 설정 및 지도에 표시
+            marker.position = LatLng(coord.latitude, coord.longitude)
+            marker.map = naverMap
+
+            // 클릭된 위치의 주소를 획득하고 토스트 메시지로 보여줌
+            getAddress(coord.latitude, coord.longitude)
+        }
+
         checkPermission() // 위치 서비스 권한 확인
+    }
+
+    //마커로 주소 및 위경도 표시하기
+    private fun getAddress(latitude: Double, longitude: Double) {
+        val geocoder = Geocoder(this, Locale.getDefault())
+        // Geocoder를 통해 위도와 경도로부터 주소를 조회합니다.
+        val addresses = try {
+            geocoder.getFromLocation(latitude, longitude, 1)
+        } catch (e: IOException) {
+            e.printStackTrace()
+            null
+        }
+
+        // 결과로 받은 주소 정보가 null이 아니고, 하나 이상의 주소가 있다면 그 중 첫 번째 주소 정보를 사용합니다.
+        val addressInfo = if (addresses != null && addresses.isNotEmpty()) addresses[0].getAddressLine(0) else "주소를 찾을 수 없습니다."
+
+        // 위도, 경도와 주소 정보를 포함한 토스트 메시지를 사용자에게 보여줍니다.
+        val message = "위도: $latitude\n경도: $longitude\n주소: $addressInfo"
+        Toast.makeText(this, message, Toast.LENGTH_LONG).show()
     }
     private fun checkPermission() {
         if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION)
