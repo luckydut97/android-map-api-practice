@@ -13,10 +13,12 @@ import com.naver.maps.map.util.FusedLocationSource
 import com.naver.maps.map.LocationTrackingMode
 
 import android.location.Geocoder
+import android.util.Log
 import java.util.Locale
 import android.widget.Toast
 import com.naver.maps.geometry.LatLng
 import com.naver.maps.map.overlay.Marker
+import com.naver.maps.map.overlay.OverlayImage
 import java.io.IOException
 
 class MainActivity : AppCompatActivity(), OnMapReadyCallback {
@@ -92,7 +94,7 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback {
         Toast.makeText(this, message, Toast.LENGTH_LONG).show()
     }
 
-    // 서울의 구별로 마커 추가
+    // 위,경도별 마커 추가
     private fun addSeoulMarkers() {
         val seoulDistricts = listOf(
             Pair("Gangnam-gu", LatLng(37.5172363, 127.0473248)),
@@ -100,15 +102,40 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback {
             Pair("Seocho-gu", LatLng(37.4837121, 127.0324117)),
             Pair("Mapo-gu", LatLng(37.566324, 126.901636)),
             Pair("Yongsan-gu", LatLng(37.532600, 126.990341)),
-            // 필요에 따라 더 많은 구 추가
+            Pair("케이크 켄버스 흑석 사옥", LatLng(37.50852948615519, 126.9610305386155))
         )
 
         for (district in seoulDistricts) {
             val marker = Marker()
             marker.position = district.second
             marker.map = naverMap
-            marker.captionText = district.first // 마커의 캡션으로 구 이름 표시
+            marker.captionText = district.first
+
+            // 마커 아이콘 설정
+            marker.icon = OverlayImage.fromResource(R.drawable.cake)
+
+            marker.setOnClickListener { overlay ->
+                val marker = overlay as Marker
+                val infoWindow = marker.infoWindow
+                if (infoWindow != null) {
+                    infoWindow.close()
+                } else {
+                    showBottomSheetDialog(marker.captionText)
+                }
+                true
+            }
         }
+    }
+
+    // 팝업창을 표시하는 함수
+    private fun showBottomSheetDialog(districtName: String) {
+        Log.d("ShowBottomSheet", "Showing bottom sheet for $districtName")
+        val bottomSheetFragment = CustomBottomSheetDialogFragment().apply {
+            arguments = Bundle().apply {
+                putString("district_name", districtName)
+            }
+        }
+        bottomSheetFragment.show(supportFragmentManager, bottomSheetFragment.tag)
     }
 
     //위치 권한 요청 및 처리
