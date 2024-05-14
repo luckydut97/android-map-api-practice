@@ -43,6 +43,7 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback {
         locationSource = FusedLocationSource(this, LOCATION_PERMISSION_REQUEST_CODE)
     }
 
+    //지도 초기화 및 설정
     override fun onMapReady(naverMap: NaverMap) {
         // NaverMap 객체가 준비되면 여기에서 지도를 설정합니다.
         // 예를 들어, 지도의 초기 위치를 설정하거나, 줌 레벨을 조정할 수 있습니다.
@@ -56,7 +57,7 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback {
         // 자전거 레이어 활성화
         naverMap.setLayerGroupEnabled(NaverMap.LAYER_GROUP_BICYCLE, true)*/
 
-        // 마커로 주소 및 위경도 표시하기-지도 클릭 이벤트 처리
+        /*// 마커로 주소 및 위경도 표시하기-지도 클릭 이벤트 처리
         naverMap.setOnMapClickListener { _, coord ->
             // 마커 위치 설정 및 지도에 표시
             marker.position = LatLng(coord.latitude, coord.longitude)
@@ -64,7 +65,10 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback {
 
             // 클릭된 위치의 주소를 획득하고 토스트 메시지로 보여줌
             getAddress(coord.latitude, coord.longitude)
-        }
+        }*/
+
+        // 서울의 구별로 마커 추가
+        addSeoulMarkers()
 
         checkPermission() // 위치 서비스 권한 확인
     }
@@ -87,6 +91,27 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback {
         val message = "위도: $latitude\n경도: $longitude\n주소: $addressInfo"
         Toast.makeText(this, message, Toast.LENGTH_LONG).show()
     }
+
+    // 서울의 구별로 마커 추가
+    private fun addSeoulMarkers() {
+        val seoulDistricts = listOf(
+            Pair("Gangnam-gu", LatLng(37.5172363, 127.0473248)),
+            Pair("Jongno-gu", LatLng(37.5729503, 126.9793579)),
+            Pair("Seocho-gu", LatLng(37.4837121, 127.0324117)),
+            Pair("Mapo-gu", LatLng(37.566324, 126.901636)),
+            Pair("Yongsan-gu", LatLng(37.532600, 126.990341)),
+            // 필요에 따라 더 많은 구 추가
+        )
+
+        for (district in seoulDistricts) {
+            val marker = Marker()
+            marker.position = district.second
+            marker.map = naverMap
+            marker.captionText = district.first // 마커의 캡션으로 구 이름 표시
+        }
+    }
+
+    //위치 권한 요청 및 처리
     private fun checkPermission() {
         if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION)
             != PackageManager.PERMISSION_GRANTED || ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION)
