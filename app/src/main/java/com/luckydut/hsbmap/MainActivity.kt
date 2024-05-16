@@ -97,12 +97,12 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback {
     // 위,경도별 마커 추가
     private fun addSeoulMarkers() {
         val seoulDistricts = listOf(
-            Pair("Gangnam-gu", LatLng(37.5172363, 127.0473248)),
-            Pair("Jongno-gu", LatLng(37.5729503, 126.9793579)),
-            Pair("Seocho-gu", LatLng(37.4837121, 127.0324117)),
-            Pair("Mapo-gu", LatLng(37.566324, 126.901636)),
-            Pair("Yongsan-gu", LatLng(37.532600, 126.990341)),
-            Pair("케이크 켄버스 흑석 사옥", LatLng(37.50852948615519, 126.9610305386155))
+            Pair("가맹점", LatLng(37.5172363, 127.0473248)),
+            Pair("가맹점", LatLng(37.5729503, 126.9793579)),
+            Pair("CakeByCake 서초연구소", LatLng(37.4837121, 127.0324117)),
+            Pair("가맹점", LatLng(37.566324, 126.901636)),
+            Pair("가맹점", LatLng(37.532600, 126.990341)),
+            Pair("CakeByCake 흑석 사옥", LatLng(37.50852948615519, 126.9610305386155))
         )
 
         for (district in seoulDistricts) {
