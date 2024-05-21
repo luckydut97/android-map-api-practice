@@ -18,6 +18,7 @@ import java.util.Locale
 import android.widget.Toast
 import com.naver.maps.geometry.LatLng
 import com.naver.maps.map.overlay.Marker
+import com.naver.maps.map.overlay.PolylineOverlay
 import com.naver.maps.map.overlay.OverlayImage
 import java.io.IOException
 
@@ -72,6 +73,12 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback {
         // 서울의 구별로 마커 추가
         addSeoulMarkers()
 
+
+        // 자전거 레이어 활성화
+        naverMap.setLayerGroupEnabled(NaverMap.LAYER_GROUP_BICYCLE, true)
+        // 마커들 간의 경로를 Polyline으로 연결
+        connectMarkersWithPolyline()
+
         checkPermission() // 위치 서비스 권한 확인
     }
 
@@ -97,12 +104,12 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback {
     // 위,경도별 마커 추가
     private fun addSeoulMarkers() {
         val seoulDistricts = listOf(
-            Pair("가맹점", LatLng(37.5172363, 127.0473248)),
-            Pair("가맹점", LatLng(37.5729503, 126.9793579)),
-            Pair("CakeByCake 서초연구소", LatLng(37.4837121, 127.0324117)),
-            Pair("가맹점", LatLng(37.566324, 126.901636)),
-            Pair("가맹점", LatLng(37.532600, 126.990341)),
-            Pair("CakeByCake 흑석 사옥", LatLng(37.50852948615519, 126.9610305386155))
+            Pair("CakeByCase 가맹점", LatLng(37.5172363, 127.0473248)),
+            Pair("CakeByCase 가맹점", LatLng(37.5729503, 126.9793579)),
+            Pair("CakeByCase 서초연구소", LatLng(37.4837121, 127.0324117)),
+            Pair("CakeByCase 가맹점", LatLng(37.566324, 126.901636)),
+            Pair("CakeByCase 가맹점", LatLng(37.532600, 126.990341)),
+            Pair("CakeByCase 흑석 사옥", LatLng(37.50852948615519, 126.9610305386155))
         )
 
         for (district in seoulDistricts) {
@@ -125,6 +132,22 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback {
                 true
             }
         }
+    }
+
+    // 마커들을 연결하는 Polyline 추가
+    private fun connectMarkersWithPolyline() {
+        val seoulDistrictsCoordinates = listOf(
+            LatLng(37.5172363, 127.0473248),
+            LatLng(37.5729503, 126.9793579),
+            LatLng(37.4837121, 127.0324117),
+            LatLng(37.566324, 126.901636),
+            LatLng(37.532600, 126.990341),
+            LatLng(37.50852948615519, 126.9610305386155)
+        )
+
+        val polyline = PolylineOverlay()
+        polyline.coords = seoulDistrictsCoordinates
+        polyline.map = naverMap
     }
 
     // 팝업창을 표시하는 함수
