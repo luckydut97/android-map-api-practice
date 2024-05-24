@@ -76,8 +76,8 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback {
 
         // 자전거 레이어 활성화
         naverMap.setLayerGroupEnabled(NaverMap.LAYER_GROUP_BICYCLE, true)
-        // 마커들 간의 경로를 Polyline으로 연결
-        connectMarkersWithPolyline()
+        /*// 마커들 간의 경로를 Polyline으로 연결
+        connectMarkersWithPolyline()*/
 
         checkPermission() // 위치 서비스 권한 확인
     }
@@ -134,7 +134,7 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback {
         }
     }
 
-    // 마커들을 연결하는 Polyline 추가
+    /*// 마커들을 연결하는 Polyline 추가
     private fun connectMarkersWithPolyline() {
         val seoulDistrictsCoordinates = listOf(
             LatLng(37.5172363, 127.0473248),
@@ -148,7 +148,7 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback {
         val polyline = PolylineOverlay()
         polyline.coords = seoulDistrictsCoordinates
         polyline.map = naverMap
-    }
+    }*/
 
     // 팝업창을 표시하는 함수
     private fun showBottomSheetDialog(districtName: String) {
